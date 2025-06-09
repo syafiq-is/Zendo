@@ -2,7 +2,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #6d6f78;
+  --text-white: #ffffff;
+  --text-brand: #1a9fff;
+  --container: #f2f3f5;
+  --container2: #e3e5e8;
+
+  /* --text-danger: #dc2626; */
 }
 
 @theme inline {
@@ -12,12 +18,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
