@@ -1,4 +1,52 @@
+"use client";
+
+import {
+  setToastMessage,
+  displayToastMessage,
+  showToast,
+} from "@/components/Toast";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 export default function LoginPage() {
+  const router = useRouter();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      setToastMessage(data.type, data.message);
+      router.push("/dashboard");
+    } else {
+      showToast(data.type, data.message);
+    }
+  };
+
+  // Handle Toasts Message
+  useEffect(() => {
+    displayToastMessage();
+  }, []);
+
   return (
     <div className="bg-[#103391]">
       <div className="flex items-center justify-center min-h-screen bg-[url('/auth_bg.svg')] bg-cover bg-center px-4">
@@ -9,21 +57,23 @@ export default function LoginPage() {
             Login to your account
           </p>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1" htmlFor="email">
                 EMAIL *
               </label>
               <input
                 type="email"
+                name="email"
                 id="email"
                 placeholder="Email"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
                 required
+                onChange={handleChange}
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label
                 className="block text-sm font-medium mb-1"
                 htmlFor="password"
@@ -31,12 +81,25 @@ export default function LoginPage() {
                 PASSWORD *
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
                 id="password"
                 placeholder="Password"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
                 required
+                onChange={handleChange}
               />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2 top-8 inset-y-0 text-gray-600 hover:text-black"
+                tabIndex={-1}
+              >
+                <span className="material-icons">
+                  {showPassword ? "visibility_off" : "visibility"}
+                </span>
+              </button>
             </div>
 
             <div className="text-sm mb-4">
