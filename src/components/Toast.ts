@@ -1,6 +1,7 @@
 // toast.ts
 import { toast } from "react-toastify";
 
+// Get toast messages from session to be displayed
 export function displayToastMessage() {
   const raw = sessionStorage.getItem("toastMessage");
   if (raw) {
@@ -14,6 +15,7 @@ export function displayToastMessage() {
   }
 }
 
+// Set toast messages to session to be read on other pages
 export function setToastMessage(
   type: "success" | "error" | "info" | "warning",
   text: string
@@ -21,6 +23,7 @@ export function setToastMessage(
   sessionStorage.setItem("toastMessage", JSON.stringify({ type, text }));
 }
 
+// Display toast immediately
 export function showToast(
   type: "success" | "error" | "info" | "warning",
   text: string
