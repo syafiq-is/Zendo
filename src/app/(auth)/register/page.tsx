@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  displayToastMessage,
-  setToastMessage,
-  showToast,
-} from "@/components/Toast";
+import { displayToastMessage, setToastMessage, showToast } from "@/lib/Toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

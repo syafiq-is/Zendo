@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  setToastMessage,
-  displayToastMessage,
-  showToast,
-} from "@/components/Toast";
+import { setToastMessage, displayToastMessage, showToast } from "@/lib/Toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -28,12 +24,7 @@ export default function LoginPage() {
 
     const data = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-    }
-
     if (res.ok) {
-      localStorage.setItem("token", data.token);
       setToastMessage(data.type, data.message);
       router.push("/dashboard");
     } else {

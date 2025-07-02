@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { WorkspaceProvider } from "./context/WorkspaceContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,7 +34,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.className} antialiased`}>
-        {children}
+        <WorkspaceProvider>{children}</WorkspaceProvider>
         <ToastContainer
           position="bottom-right"
           closeOnClick={true}

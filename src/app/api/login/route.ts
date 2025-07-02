@@ -2,7 +2,7 @@ import { connectDB } from "@/lib/mongo";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { email, password }: { email: string; password: string } =
@@ -39,9 +39,18 @@ export async function POST(req: NextRequest) {
     { expiresIn: "7d" }
   );
 
-  return Response.json({
+  const response = NextResponse.json({
     type: "success",
     message: "Login successful",
-    token,
   });
+  response.cookies.set({
+    name: "token",
+    value: token,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  });
+
+  return response;
 }

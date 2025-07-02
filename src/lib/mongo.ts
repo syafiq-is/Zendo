@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" }); // Needed to run seeder.ts
+
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
