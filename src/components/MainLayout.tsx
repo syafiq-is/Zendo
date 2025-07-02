@@ -23,14 +23,14 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       {/* Main Grid */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar 1 */}
-        <div className="flex flex-col items-center bg-[var(--container2)] p-4 space-y-4 w-16">
+        <div className="flex flex-col items-center bg-color-bg-darker p-4 space-y-4 w-16">
           {workspaces?.map((workspace) => (
             <button
               key={workspace._id}
               onClick={() => setActiveWorkspace(workspace)}
               className={`w-10 h-10 rounded-full flex items-center justify-center hover:opacity-80 transition ${
                 activeWorkspace?._id === workspace._id
-                  ? "bg-[var(--text-brand)] text-white"
+                  ? "bg-color-brand text-white"
                   : "bg-gray-300 text-black"
               }`}
               title={workspace.name}
@@ -41,7 +41,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         </div>
 
         {/* Sidebar 2 */}
-        <div className="w-[220px] flex flex-col bg-[var(--container)]">
+        <div className="w-[220px] flex flex-col bg-color-bg-dark">
           {/* Top Bar */}
           <div className="w-full h-[70px] flex items-center justify-between bg-white shadow-md px-6 py-5">
             <div className="text-xl font-bold">

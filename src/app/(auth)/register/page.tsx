@@ -56,7 +56,7 @@ export default function RegisterPage() {
                 name="email"
                 placeholder="Email"
                 id="email"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-color-brand"
                 required
                 onChange={handleChange}
               />
@@ -74,7 +74,7 @@ export default function RegisterPage() {
                 name="username"
                 placeholder="Username"
                 id="username"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-color-brand"
                 required
                 onChange={handleChange}
               />
@@ -92,7 +92,7 @@ export default function RegisterPage() {
                 name="password"
                 id="password"
                 placeholder="Password"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--text-brand)]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-color-brand"
                 required
                 onChange={handleChange}
               />
@@ -113,23 +113,17 @@ export default function RegisterPage() {
               <input
                 type="checkbox"
                 id="terms"
-                className="w-4 h-4 text-[var(--text-brand)] border-gray-300 rounded focus:ring-[var(--text-brand)]"
+                className="w-4 h-4 text-color-brand border-gray-300 rounded focus:ring-color-brand"
                 required
                 onChange={handleChange}
               />
               <label htmlFor="terms" className="text-sm">
                 I have read and agree to Zendo&apos;s{" "}
-                <a
-                  href="#"
-                  className="text-[var(--text-brand)] hover:underline"
-                >
+                <a href="#" className="text-color-brand hover:underline">
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a
-                  href="#"
-                  className="text-[var(--text-brand)] hover:underline"
-                >
+                <a href="#" className="text-color-brand hover:underline">
                   Privacy Policy
                 </a>
               </label>
@@ -137,16 +131,13 @@ export default function RegisterPage() {
 
             <button
               type="submit"
-              className="w-full bg-[var(--text-brand)] text-white py-2 rounded-md font-semibold hover:opacity-90 transition"
+              className="w-full bg-color-brand text-white py-2 rounded-md font-semibold hover:opacity-90 transition"
             >
               Register
             </button>
 
             <div className="text-sm">
-              <a
-                href="/login"
-                className="text-[var(--text-brand)] hover:underline"
-              >
+              <a href="/login" className="text-color-brand hover:underline">
                 Already have an account?
               </a>
             </div>
