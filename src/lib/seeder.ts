@@ -1,39 +1,95 @@
 import { connectDB } from "@/lib/mongo";
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import { GridFSBucket } from "mongodb";
+
+import fs from "fs";
+import path from "path";
+
 import User from "@/models/User";
 import Workspace from "@/models/Workspace";
 import TaskBoard from "@/models/TaskBoard";
 import Todo from "@/models/Todo";
-import bcrypt from "bcrypt";
+
+// Upload local image to GridFS and return its ObjectId
+async function uploadImageToGridFS(
+  filename: string,
+  bucket: GridFSBucket
+): Promise<mongoose.Types.ObjectId> {
+  return new Promise((resolve, reject) => {
+    const filePath = path.join(process.cwd(), "public", "images", filename);
+
+    if (!fs.existsSync(filePath)) {
+      return reject(new Error(`❌ Image not found: ${filePath}`));
+    }
+
+    const readStream = fs.createReadStream(filePath);
+    const uploadStream = bucket.openUploadStream(filename);
+
+    readStream
+      .pipe(uploadStream)
+      .on("error", reject)
+      .on("finish", () => {
+        if (!uploadStream.id) {
+          return reject(new Error("Upload finished but no file ID returned"));
+        }
+        console.log(`✅ Uploaded ${filename} as ID: ${uploadStream.id}`);
+        resolve(uploadStream.id as mongoose.Types.ObjectId);
+      });
+  });
+}
 
 async function seed() {
-  console.log("Working Directory:", process.cwd());
-  console.log("Loaded MONGODB_URI:", process.env.MONGODB_URI);
-  await connectDB();
-  console.log("🚀 Connected to MongoDB");
+  console.log("🌱 Seeder running...");
+  const { bucket } = await connectDB();
+  console.log("🚀 MongoDB connected");
+
+  // Clean GridFS
+  try {
+    const db = mongoose.connection.db;
+    const filesDeleted = await db
+      ?.collection("profileImgs.files")
+      .deleteMany({});
+    const chunksDeleted = await db
+      ?.collection("profileImgs.chunks")
+      .deleteMany({});
+    console.log(
+      `🧹 Cleaned GridFS: ${filesDeleted?.deletedCount} files, ${chunksDeleted?.deletedCount} chunks`
+    );
+  } catch (err) {
+    console.error("❌ Failed to clean GridFS:", err);
+    process.exit(1);
+  }
 
   try {
-    // Clear previous
+    // Clear data
     await User.deleteMany();
     await Workspace.deleteMany();
     await TaskBoard.deleteMany();
     await Todo.deleteMany();
 
-    // Users
+    // Upload images
+    await uploadImageToGridFS("profile_hsy.jpg", bucket);
+    await uploadImageToGridFS("profile_kdj.jpg", bucket);
+
+    // Create users
     const [admin, dokja] = await User.insertMany([
       {
         username: "Admin",
         email: "admin@email.com",
         passwordHash: await bcrypt.hash("password", 10),
+        profileImg: "profile_hsy.jpg",
       },
       {
         username: "Kim Dokja",
         email: "kim.dj@email.com",
         passwordHash: await bcrypt.hash("password", 10),
+        profileImg: "profile_kdj.jpg",
       },
     ]);
 
-    // Todo
-    const todo = await Todo.insertMany([
+    // Create todo
+    const [todo] = await Todo.insertMany([
       {
         title: "Implement Seeder",
         description:
@@ -64,32 +120,17 @@ async function seed() {
       },
     ]);
 
-    // TaskBoard
+    // Create taskboards
     const taskboards = await TaskBoard.insertMany([
-      {
-        title: "Todo",
-        todos: [todo[0].id],
-      },
-      {
-        title: "In progress",
-        todos: [],
-      },
-      {
-        title: "Done",
-        todos: [],
-      },
-      {
-        title: "Random Board",
-        todos: [],
-      },
-      {
-        title: "Random Board Again",
-        todos: [],
-      },
+      { title: "Todo", todos: [todo._id] },
+      { title: "In progress", todos: [] },
+      { title: "Done", todos: [] },
+      { title: "Random Board", todos: [] },
+      { title: "Random Board Again", todos: [] },
     ]);
 
-    // Workspace
-    const workspace = await Workspace.insertMany([
+    // Create workspaces
+    await Workspace.insertMany([
       {
         name: "Workspace 1",
         users: [admin._id, dokja._id],

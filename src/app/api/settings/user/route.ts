@@ -1,11 +1,7 @@
 // app/api/workspace/route.ts
 import { connectDB } from "@/lib/mongo";
-import Workspace from "@/models/Workspace";
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUserData } from "@/lib/JWT";
-import "@/models/User";
-import "@/models/TaskBoard";
-import "@/models/Todo";
 import User, { IUser } from "@/models/User";
 
 export async function GET(req: NextRequest) {
@@ -27,24 +23,9 @@ export async function GET(req: NextRequest) {
       profileImg: user.profileImg,
     };
 
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const workspaces = await Workspace.find({ users: userId })
-      .populate("users")
-      .populate({
-        path: "taskboards",
-        populate: {
-          path: "todos",
-          model: "Todo",
-        },
-      })
-      .lean();
-
-    return NextResponse.json({ workspaces, authUserData });
+    return NextResponse.json({ authUserData });
   } catch (error) {
-    console.error("API /workspace error:", error);
+    console.error("API /settings/user error:", error);
     return NextResponse.json(
       { error: "Internal Server Error:" },
       { status: 500 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 interface Todo {
   _id: string;
-  content: string;
+  title: string;
 }
 
 interface TaskBoard {
@@ -85,6 +85,7 @@ export default function DragDropBoard({ taskboards, onDropItem }: Props) {
               </div>
             ))}
           </div>
+          <button className="">+ Add Todo</button>
         </div>
       ))}
     </div>

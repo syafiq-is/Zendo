@@ -1,19 +1,24 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 import { useWorkspace } from "@/app/context/WorkspaceContext";
+import { AuthUserData } from "@/lib/JWT";
+import { IWorkspace } from "@/models/Workspace";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
-  const [workspaces, setWorkspaces] = useState<any[]>([]);
+  const [authUserData, setAuthUserData] = useState<AuthUserData>();
+  const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const { activeWorkspace, setActiveWorkspace } = useWorkspace();
 
   useEffect(() => {
     fetch("/api/workspace")
       .then((res) => res.json())
       .then((data) => {
-        setWorkspaces(data);
-        if (data.length > 0) {
-          setActiveWorkspace(data[0]); // Default to first workspace
+        const { workspaces, authUserData } = data;
+        setWorkspaces(workspaces);
+        if (workspaces.length > 0) {
+          setActiveWorkspace(workspaces[0]); // Default to first workspace
         }
+        setAuthUserData(authUserData);
       })
       .catch(console.error);
   }, [setActiveWorkspace]);
@@ -25,8 +30,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         {/* Sidebar 1 */}
         <div className="flex flex-col items-center bg-color-bg-darker p-4 space-y-4 w-16">
           {workspaces?.map((workspace) => (
-            <button
-              key={workspace._id}
+            <a
+              key={workspace._id.toString()}
               onClick={() => setActiveWorkspace(workspace)}
               className={`w-10 h-10 rounded-full flex items-center justify-center hover:opacity-80 transition ${
                 activeWorkspace?._id === workspace._id
@@ -36,7 +41,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               title={workspace.name}
             >
               <span className="material-icons text-xl">add</span>
-            </button>
+            </a>
           ))}
         </div>
 
@@ -50,34 +55,54 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="w-full h-full flex flex-col  p-4 space-y-2">
-            <button className="flex items-center space-x-1 px-3 py-2 m-0">
+            <a href="" className="flex items-center space-x-1 px-3 py-2 m-0">
               <span className="material-icons text-xl">
                 keyboard_arrow_down
               </span>
               <span className="font-semibold text-sm">This Workspace</span>
-            </button>
-            <button className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition">
+            </a>
+            <a
+              href=""
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition"
+            >
               <span className="material-icons text-xl">assignment</span>
               <span>Task Board</span>
-            </button>
-            <button className="flex items-center space-x-1 px-3 py-2 m-0">
+            </a>
+            <a
+              href="/settings/workspace
+              "
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition"
+            >
+              <span className="material-icons text-xl">settings</span>
+              <span>Workspace Settings</span>
+            </a>
+            <a href="" className="flex items-center space-x-1 px-3 py-2 m-0">
               <span className="material-icons text-xl">
                 keyboard_arrow_down
               </span>
               <span className="font-semibold text-sm">Global</span>
-            </button>
-            <button className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition">
+            </a>
+            <a
+              href=""
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition"
+            >
               <span className="material-icons text-xl">bar_chart</span>
               <span>Leaderboards</span>
-            </button>
-            <button className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition">
+            </a>
+            <a
+              href=""
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition"
+            >
               <span className="material-icons text-xl">emoji_events</span>
               <span>Achievement</span>
-            </button>
-            <button className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition">
+            </a>
+            <a
+              href="/settings/user"
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-300 transition"
+            >
               <span className="material-icons text-xl">settings</span>
               <span>Settings</span>
-            </button>
+            </a>
           </div>
         </div>
 
@@ -89,7 +114,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               {activeWorkspace?.name || "Task Board"}
             </div>
             <Image
-              src="/profile-pic.png"
+              src={`/api/profile/image/${authUserData?.profileImg}`}
               width={25}
               height={25}
               alt="User 2"

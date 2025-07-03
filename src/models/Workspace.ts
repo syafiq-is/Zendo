@@ -2,6 +2,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IWorkspace extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   users: mongoose.Types.ObjectId[];
   taskboards: mongoose.Types.ObjectId[];

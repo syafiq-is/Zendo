@@ -1,17 +1,28 @@
-// app/lib/JWT.ts
-import { jwtDecode } from "jwt-decode";
+// lib/JWT.ts
+import { jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 
-export function getAuthUserId(req: NextRequest): string | null {
-  const token = req.cookies.get("token")?.value;
+const jwtSecret = process.env.JWT_SECRET!;
+const secret = new TextEncoder().encode(jwtSecret);
 
+export type AuthUserData = {
+  id: string;
+  username: string;
+  email: string;
+  profileImg: string;
+};
+
+export async function getAuthUserData(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
   if (!token) return null;
 
   try {
-    const decoded = jwtDecode<{ userId: string }>(token);
-    return decoded.userId;
+    const { payload } = await jwtVerify(token, secret);
+    return {
+      id: payload.userId as string,
+    };
   } catch (err) {
-    console.error("JWT decode failed:", err);
+    console.error("JWT verify failed:", err);
     return null;
   }
 }

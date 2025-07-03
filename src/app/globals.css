@@ -12,7 +12,7 @@
   /* --text-success: #dc2626; */
   /* --text-info: #dc2626; */
   /* --text-warning: #dc2626; */
-  /* --text-danger: #dc2626; */
+  --color-danger: #dc2626;
 }
 
 @theme inline {
@@ -20,6 +20,7 @@
   --color-color-bg: var(--color-bg);
   --color-color-bg-dark: var(--color-bg-dark);
   --color-color-bg-darker: var(--color-bg-darker);
+  --color-color-danger: var(--color-danger);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
